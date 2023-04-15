@@ -4,12 +4,14 @@ import com.spring.jwt.dto.ProductFormRequest;
 import com.spring.jwt.entity.Category;
 import com.spring.jwt.entity.Product;
 import com.spring.jwt.entity.User;
+import com.spring.jwt.exception.BaseException;
 import com.spring.jwt.repository.CategoryRepository;
 import com.spring.jwt.repository.ProductRepository;
 import com.spring.jwt.repository.UserRepository;
 import com.spring.jwt.service.category.CategoryService;
 import com.spring.jwt.service.files.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -44,10 +46,12 @@ public class ProductServiceImpl implements ProductService {
         product1.setCategory(categoryService.getCategory(product.getCatId()).orElseThrow());
         product1.setName(product.getName());
         product1.setDescription(product.getDescription());
+        product1.setPrice(product.getPrice());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByUsername(auth.getName());
         product1.setUser(user);
         String pathImage = fileService.store(product.getImageFile());
+        product1.setImage(pathImage);
         return productRepository.save(product1);
     }
 
@@ -57,8 +61,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String deleteProduct(Long productId) {
-        return null;
+    public void deleteProduct(Long productId) {
+        productRepository.delete(getProduct(productId).orElseThrow(() -> {
+            throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Failed");
+        }));
     }
 
 }

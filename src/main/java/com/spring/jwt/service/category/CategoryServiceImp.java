@@ -42,7 +42,12 @@ public class CategoryServiceImp implements CategoryService{
     }
     @Override
     public Category updateCategory(Long catId, CategoryFormRequest category) {
-        return null;
+        Category category1 = getCategory(catId).orElseThrow();
+        category1.setName(category.getName());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByUsername(auth.getName());
+        category1.setUser(user);
+        return categoryRepository.save(category1);
     }
 
     @Override

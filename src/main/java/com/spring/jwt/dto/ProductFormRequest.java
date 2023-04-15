@@ -14,5 +14,6 @@ public class ProductFormRequest implements Serializable {
     private String name;
     private Long catId;
     private String description;
+    private double price;
     private MultipartFile imageFile;
 }

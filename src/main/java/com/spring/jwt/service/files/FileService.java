@@ -8,15 +8,6 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 public interface FileService {
-    void init();
-
-    String store(MultipartFile file);
-
-    Stream<Path> loadAll();
-
-    Path load(String filename);
-
-    Resource loadAsResource(String filename);
-
-    void deleteAll();
+    String store(MultipartFile file) throws IOException;
+    byte[] downloadImageFromFileSystem (String filename) throws IOException;
 }

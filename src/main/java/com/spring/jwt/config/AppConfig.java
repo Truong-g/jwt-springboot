@@ -1,6 +1,7 @@
 package com.spring.jwt.config;
 
 
+import com.spring.jwt.config.filter.CorsFilter;
 import com.spring.jwt.config.filter.CustomAuthenticationProvider;
 import com.spring.jwt.config.filter.JWTTokenAuthenticationFilter;
 import com.spring.jwt.config.filter.JWTUsernamePasswordAuthenticationFilter;
@@ -13,6 +14,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,6 +24,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -69,7 +73,6 @@ public class AppConfig {
         builder.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
         AuthenticationManager manager = builder.build();
         http
-                .cors().disable()
                 .csrf().disable()
                 .formLogin().disable()
                 .authorizeHttpRequests()
@@ -78,7 +81,11 @@ public class AppConfig {
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .requestMatchers("/user/**").hasAuthority("USER")
                 .requestMatchers("/category/**").hasAuthority("ADMIN")
-                .requestMatchers("/product/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/product/{id}").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE,"/product/{id}").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/product").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/product/**").permitAll()
+                .requestMatchers("/image/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .authenticationManager(manager)
@@ -91,6 +98,7 @@ public class AppConfig {
                 )
                 .accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and()
+                .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
                 .addFilterBefore(
                         new JWTUsernamePasswordAuthenticationFilter(
                                 manager,

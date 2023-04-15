@@ -30,12 +30,12 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<CustomResponse<Optional<Category>>> getCategory(@PathVariable Long id) {
-//        Optional<Category> category = categoryService.getCategory(id);
-//        CustomResponse<Optional<Category>> response = new CustomResponse<Optional<Category>>(HttpStatus.OK.value(), "success", category);
-//        return ResponseEntity.ok(response);
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<CustomResponse<Optional<Product>>> getProduct(@PathVariable Long id) {
+        Optional<Product> product = productService.getProduct(id);
+        CustomResponse<Optional<Product>> response = new CustomResponse<Optional<Product>>(HttpStatus.OK.value(), "success", product);
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping
     public ResponseEntity<CustomResponse<Product>> addProduct(@ModelAttribute ProductFormRequest request) throws IOException {
@@ -52,11 +52,11 @@ public class ProductController {
 //    }
 //
 //
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<CustomResponse<String>> updateCategory(@PathVariable Long id) {
-//        categoryService.removeCategory(id);
-//        CustomResponse<String> response = new CustomResponse<>(HttpStatus.OK.value(), "success", null);
-//        return ResponseEntity.ok(response);
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CustomResponse<String>> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        CustomResponse<String> response = new CustomResponse<>(HttpStatus.OK.value(), "success", null);
+        return ResponseEntity.ok(response);
+    }
 
 }
