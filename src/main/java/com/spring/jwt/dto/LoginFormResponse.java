@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 public class LoginFormResponse {
     private String username;
+    private String fullname;
     private String accessToken;
     private List<String> roles;
 }

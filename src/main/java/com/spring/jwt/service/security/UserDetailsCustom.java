@@ -14,6 +14,7 @@ import java.util.List;
 public class UserDetailsCustom implements UserDetails {
     private String username;
     private String password;
+    private String fullname;
     private List<GrantedAuthority> authorities;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -28,6 +29,10 @@ public class UserDetailsCustom implements UserDetails {
     @Override
     public String getUsername() {
         return username;
+    }
+
+    public String getFullname() {
+        return fullname;
     }
 
     @Override

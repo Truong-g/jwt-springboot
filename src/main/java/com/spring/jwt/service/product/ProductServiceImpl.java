@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -47,8 +48,9 @@ public class ProductServiceImpl implements ProductService {
         product1.setName(product.getName());
         product1.setDescription(product.getDescription());
         product1.setPrice(product.getPrice());
+        product1.setPriceSale(product.getPriceSale());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(auth.getName());
+        User user = userRepository.findByUsername(auth.getName()).orElseThrow();
         product1.setUser(user);
         String pathImage = fileService.store(product.getImageFile());
         product1.setImage(pathImage);
@@ -56,8 +58,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(ProductFormRequest product) {
-        return null;
+    public Product updateProduct(Long id, ProductFormRequest product) throws IOException{
+        Product product1 = getProduct(id).orElseThrow();
+        product1.setCategory(categoryService.getCategory(product.getCatId()).orElseThrow());
+        product1.setName(product.getName());
+        product1.setDescription(product.getDescription());
+        product1.setPrice(product.getPrice());
+        product1.setPriceSale(product.getPriceSale());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByUsername(auth.getName()).orElseThrow();
+        product1.setUser(user);
+        if(!ObjectUtils.isEmpty(product.getImageFile())){
+            String pathImage = fileService.store(product.getImageFile());
+            product1.setImage(pathImage);
+        }
+        return productRepository.save(product1);
     }
 
     @Override

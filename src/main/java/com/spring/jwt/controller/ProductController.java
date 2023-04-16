@@ -7,6 +7,7 @@ import com.spring.jwt.dto.ProductFormRequest;
 import com.spring.jwt.entity.Category;
 import com.spring.jwt.entity.Product;
 import com.spring.jwt.service.product.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,20 +39,18 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomResponse<Product>> addProduct(@ModelAttribute ProductFormRequest request) throws IOException {
+    public ResponseEntity<CustomResponse<Product>> addProduct(@Valid @ModelAttribute ProductFormRequest request) throws IOException {
         Product product = productService.addProduct(request);
         CustomResponse<Product> response = new CustomResponse<>(HttpStatus.OK.value(), "success", product);
         return ResponseEntity.ok(response);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<CustomResponse<Product>> updateProduct(@PathVariable Long id, @Valid @ModelAttribute ProductFormRequest request) throws IOException {
+        Product product = productService.updateProduct(id, request);
+        CustomResponse<Product> response = new CustomResponse<>(HttpStatus.OK.value(), "success", product);
+        return ResponseEntity.ok(response);
+    }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<CustomResponse<Category>> updateCategory(@PathVariable Long id, @RequestBody CategoryFormRequest request) {
-//        Category category = categoryService.updateCategory(id, request);
-//        CustomResponse<Category> response = new CustomResponse<>(HttpStatus.OK.value(), "success", category);
-//        return ResponseEntity.ok(response);
-//    }
-//
-//
     @DeleteMapping("/{id}")
     public ResponseEntity<CustomResponse<String>> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);

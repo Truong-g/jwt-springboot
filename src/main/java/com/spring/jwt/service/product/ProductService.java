@@ -15,7 +15,7 @@ public interface ProductService {
 
     Product addProduct(ProductFormRequest product) throws IOException;
 
-    Product updateProduct(ProductFormRequest product);
+    Product updateProduct(Long id, ProductFormRequest product) throws IOException;
 
     void deleteProduct(Long productId);
 

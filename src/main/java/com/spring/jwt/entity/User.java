@@ -22,7 +22,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+
+    @Column(unique = true)
     private String username;
+
+    private String fullname;
+
     @JsonIgnore
     private String password;
 

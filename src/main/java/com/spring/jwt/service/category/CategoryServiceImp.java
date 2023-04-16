@@ -36,7 +36,7 @@ public class CategoryServiceImp implements CategoryService{
         Category category1 = new Category();
         category1.setName(category.getName());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(auth.getName());
+        User user = userRepository.findByUsername(auth.getName()).orElseThrow();
         category1.setUser(user);
         return categoryRepository.save(category1);
     }
@@ -45,7 +45,7 @@ public class CategoryServiceImp implements CategoryService{
         Category category1 = getCategory(catId).orElseThrow();
         category1.setName(category.getName());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(auth.getName());
+        User user = userRepository.findByUsername(auth.getName()).orElseThrow();
         category1.setUser(user);
         return categoryRepository.save(category1);
     }

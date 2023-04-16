@@ -36,7 +36,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         final String password = authentication.getCredentials().toString();
         User user;
         try {
-            user = userRepository.findByUsername(username);
+            user = userRepository.findByUsername(username).orElseThrow();
         } catch (Exception e) {
             throw new BaseException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), "User is not found");
         }

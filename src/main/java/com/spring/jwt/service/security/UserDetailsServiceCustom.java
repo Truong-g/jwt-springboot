@@ -28,13 +28,14 @@ public class UserDetailsServiceCustom implements UserDetailsService {
     }
 
     private UserDetailsCustom getUserDetails(String username) {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username).orElseThrow();
         if(ObjectUtils.isEmpty(user)){
             throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "invalid username or password");
         }
         return new UserDetailsCustom(
                 user.getUsername(),
                 user.getPassword(),
+                user.getFullname(),
                 user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList())
         );
 
